@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'app/style.css' %}">
+    
+    <div class="join-room-container">
+        {% if not user.is_teacher %}
+            <h2>Join a Room</h2>
+            
+            <form method="post" action="{% url 'app:join_room' %}">
+                {% csrf_token %}
+                
+                <div class="form-group">
+                    <label for="{{ form.room_name.id_for_label }}">Room Name:</label>
+                    {{ form.room_name }}
+                    {{ form.room_name.errors }}
+                </div>
+                
+                <div class="form-group">
+                    <label for="{{ form.pass_key.id_for_label }}">Pass Key:</label>
+                    {{ form.pass_key }}
+                    {{ form.pass_key.errors }}
+                </div>
+                
+                <button type="submit" class="join-room-btn">Send Request</button>
+            </form>
+
+            {% if success %}
+                <p class="success-message">
+                    {% if room.has_join_request %}
+                        Join request sent successfully. Wait for approval.
+                    {% else %}
+                        Joined room successfully.
+                    {% endif %}
+                </p>
+            {% endif %}
+
+            {% if failure %}
+                <p class="error-message">{{ failure_message }}</p>
+            {% endif %}
+            
+        {% else %}
+            <p class="teacher-message">Teachers cannot join a room.</p>
+        {% endif %}
+        
+        <a href="{% url 'app:home' %}" class="dashboard-btn">Go Home</a>
+    </div>
+
+    <script>
+        $(document).ready(function() {
+            $('.join-room-container').css('opacity', '0').animate({ opacity: '1' }, 300);
+        });
+    </script>
+{% endblock %}

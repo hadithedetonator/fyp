@@ -1,0 +1,130 @@
+body {
+  margin: 0;
+  padding: 0;
+  font-family: 'Arial', sans-serif;
+  background: #6a11cb;
+  background: -webkit-linear-gradient(to right, rgba(106, 17, 203, 1), rgba(37, 117, 252, 1));
+  background: linear-gradient(to right, rgb(241, 236, 247), rgba(37, 117, 252, 1));
+  display: grid;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+.dashboard-container,
+.room-detail-container,
+.join-room-container {
+  background: #000;
+  border-radius: 15px;
+  padding: 20px;
+  color: #fff;
+  text-align: center;
+  margin: 20px; /* Adjust the margin as needed */
+}
+
+.dashboard-btn,
+.room-btn,
+.join-room-btn {
+  display: block;
+  margin-top: 10px;
+  padding: 10px;
+  background-color: #007bff;
+  color: #fff;
+  text-decoration: none;
+  border-radius: 5px;
+}
+
+.dashboard-btn:hover,
+.room-btn:hover,
+.join-room-btn:hover {
+  background-color: #0056b3;
+}
+
+h3 {
+  font-size: 30px;
+}
+
+li {
+  list-style: none;
+}
+
+.file-delete-btn {
+  margin-left: 5px; /* Adjust the margin as needed */
+  color: #ff5757;
+  text-decoration: none;
+}
+
+.file-delete-btn:hover {
+  color: #ff2f2f;
+}
+
+p.teacher-message {
+  margin-top: 10px;
+  color: #ff5757;
+}
+
+.form-group {
+  margin-bottom: 15px;
+}
+
+.form-group label {
+  display: block;
+  font-size: 14px; /* Adjust the font size as needed */
+  margin-bottom: 5px;
+}
+
+.form-error {
+  color: #ff5757;
+  font-size: 12px; /* Adjust the font size as needed */
+  margin-top: 5px;
+}
+
+.error-message {
+  color: #ff5757;
+  font-size: 14px; /* Adjust the font size as needed */
+  margin-top: 10px;
+}
+
+.join-requests-container {
+  background: #000;
+  border-radius: 15px;
+  padding: 20px;
+  color: #fff;
+  text-align: center;
+  margin: 20px; /* Adjust the margin as needed */
+}
+
+.join-requests-list {
+  list-style: none;
+  padding: 0;
+}
+
+.join-requests-list li {
+  margin-bottom: 15px;
+}
+
+.accept-btn,
+.reject-btn {
+  display: inline-block;
+  padding: 5px 10px;
+  margin-left: 10px;
+  background-color: #28a745; /* Green color for accept button */
+  color: #fff;
+  text-decoration: none;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.accept-btn:hover,
+.reject-btn:hover {
+  background-color: #218838; /* Darker green color on hover */
+}
+
+.reject-btn {
+  background-color: #dc3545; /* Red color for reject button */
+}
+
+.reject-btn:hover {
+  background-color: #c82333; /* Darker red color on hover */
+}

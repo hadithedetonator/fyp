@@ -1,0 +1,71 @@
+
+    <div id="app">
+        <h1>Tutor-Ai</h1>
+        <h2>Generate Quiz, Assignments, and Exams</h2>
+        <div class="upload-container">
+            <h2>Upload Your Book</h2>
+            <form id="uploadForm" action="/upload/" method="post" enctype="multipart/form-data">
+                <input type="file" name="bookFile" id="bookFile" required>
+                <textarea name="bookContent" id="bookContent" placeholder="Enter your book content..." disabled></textarea>
+                <button type="button">Upload</button>
+                <button type="button" id="goButton" disabled>Go</button>
+                <button type="button" disabled>Send to Room</button>
+            </form>
+            <div id="response"></div>
+        </div>
+    </div>
+</body>
+<style>
+    body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: #f5f5f5;
+}
+
+.upload-container {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+h2 {
+    margin-bottom: 20px;
+}
+
+h1 {
+    margin-bottom: 20px;
+}
+
+
+form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+input[type="file"] {
+    margin-bottom: 10px;
+}
+
+textarea {
+    height: 100px;
+}
+
+button {
+    padding: 10px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    cursor: pointer;
+}
+
+button:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+}

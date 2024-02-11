@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <section class="login-section">
+
+    {% load static %}
+
+    <img style="height: 250px; width: 250px;" src="{% static 'accounts/logo.png' %}" alt="My image">
+    <link rel="stylesheet" href="{% static 'accounts/style.css' %}">
+    
+    <form method="post" class="login-form">
+      <h2>Login</h2>
+      {% csrf_token %}
+      <div class="form-group">
+        {{ form.username.label_tag }}
+        {{ form.username }}
+        <div class="form-error">{{ form.username.errors }}</div>
+      </div>
+      <div class="form-group">
+        {{ form.password.label_tag }}
+        {{ form.password }}
+        <div class="form-error">{{ form.password.errors }}</div>
+      </div>
+
+      <button type="submit" class="btn-login">Login</button>
+      <a href="{% url 'accounts:register' %}" class="not-registered">Not Registered?</a>
+
+      <!-- Display form non-field errors (e.g., the 'Invalid username or password.' error) -->
+      <div class="form-error">{{ form.non_field_errors }}</div>
+    </form>
+  </section>
+
+  <script>
+    $(document).ready(function() {
+        $('.login-form').css('opacity', '0').animate({ opacity: '1' }, 300);
+    });
+    </script>
+{% endblock %}

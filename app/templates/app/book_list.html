@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h2>Your Uploaded Books</h2>
+    <ul>
+        {% if uploaded_books %}
+        {% for book in uploaded_books %}
+            <li>
+                {{ book.title }} <br>
+                <h6>Uploaded on : {{ book.uploaded_at }}</h6>
+                <form method="GET" action="{% url 'app:book_detail' book.id %}">
+                    <button type="submit">View Book</button>
+                </form>
+            </li>
+        {% endfor %}
+        {% else %}
+        <h5>You have no uploaded books.</h5>
+    </ul>
+    {% endif %}
+
+    <a href="{% url 'app:upload_book' %}">Upload a Book</a>
+{% endblock %}

@@ -1,0 +1,289 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.10.377/pdf.min.js"></script>
+<h2>Query Form</h2>
+<div class="container">
+    <div class="pdf-container">
+        <div class="top-bar">
+            <button class="btn" id="prev-page">
+                <i class="fas fa-arrow-circle-left"></i> Prev Page
+            </button>
+            <button class="btn" id="next-page">
+                Next Page <i class="fas fa-arrow-circle-right"></i>
+            </button>
+            <span class="page-info">
+                Page <span id="page-num"></span> of <span id="page-count"></span>
+            </span>
+        </div>
+        <canvas id="pdf-render"></canvas>
+        <div id="page-checkboxes"></div> <!-- Container for checkboxes -->
+    </div>
+    <div class="query-form">
+        <form id="query-form">
+            {% csrf_token %}
+            <label for="query">Enter your query:</label>
+            <input type="text" name="query" id="query" required>
+            <button type="submit">Submit Query</button>
+        </form>
+    </div>
+</div>
+
+
+
+
+<style>
+    .container {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+    }
+
+    .pdf-container {
+        flex: 1;
+        position: relative;
+        margin-right: 20px;
+    }
+
+    .query-form {
+        flex: 1;
+    }
+
+    /* Checkbox Styles */
+    .page-checkbox {
+        margin-right: 10px;
+    }
+
+    /* Additional Styles */
+    .top-bar {
+        background: #333;
+        color: #fff;
+        padding: 1rem;
+    }
+
+    .btn {
+        background: coral;
+        color: #fff;
+        border: none;
+        outline: none;
+        cursor: pointer;
+        padding: 0.7rem 2rem;
+    }
+
+    .btn:hover {
+        opacity: 0.9;
+    }
+
+    .page-info {
+        margin-left: 1rem;
+    }
+
+    .error {
+        background: orangered;
+        color: #fff;
+        padding: 1rem;
+    }
+
+    #pdf-render {
+        margin-left: 29rem;
+        margin-bottom: 20px;
+    }
+
+    .top-bar {
+        background: #333;
+        color: #fff;
+        padding: 1rem;
+    }
+
+    .btn {
+        background: coral;
+        color: #fff;
+        border: none;
+        outline: none;
+        cursor: pointer;
+        padding: 0.7rem 2rem;
+    }
+
+    .btn:hover {
+        opacity: 0.9;
+    }
+
+    .page-info {
+        margin-left: 1rem;
+    }
+
+    .error {
+        background: orangered;
+        color: #fff;
+        padding: 1rem;
+    }
+
+    #pdf-render {
+        margin-left: 29rem;
+    }
+</style>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const url = '/{{book.upload}}';
+
+    let pdfDoc = null,
+        pageNum = 1,
+        pageIsRendering = false,
+        pageNumIsPending = null;
+
+    const scale = 1.5,
+        canvas = document.querySelector('#pdf-render'),
+        ctx = canvas.getContext('2d');
+
+    // Render the page
+    const renderPage = num => {
+        pageIsRendering = true;
+
+        // Get page
+        pdfDoc.getPage(num).then(page => {
+            // Set scale
+            const viewport = page.getViewport({ scale });
+            canvas.height = viewport.height;
+            canvas.width = viewport.width;
+
+            const renderCtx = {
+                canvasContext: ctx,
+                viewport
+            };
+
+            page.render(renderCtx).promise.then(() => {
+                pageIsRendering = false;
+
+                if (pageNumIsPending !== null) {
+                    renderPage(pageNumIsPending);
+                    pageNumIsPending = null;
+                }
+            });
+
+            // Output current page
+            document.querySelector('#page-num').textContent = num;
+        });
+    };
+
+    // Check for pages rendering
+    const queueRenderPage = num => {
+        if (pageIsRendering) {
+            pageNumIsPending = num;
+        } else {
+            renderPage(num);
+        }
+    };
+
+    // Show Prev Page
+    const showPrevPage = () => {
+        if (pageNum <= 1) {
+            return;
+        }
+        pageNum--;
+        queueRenderPage(pageNum);
+    };
+
+    // Show Next Page
+    const showNextPage = () => {
+        if (pageNum >= pdfDoc.numPages) {
+            return;
+        }
+        pageNum++;
+        queueRenderPage(pageNum);
+    };
+
+    // Get Document
+    pdfjsLib.getDocument(url)
+        .promise.then(pdfDoc_ => {
+            pdfDoc = pdfDoc_;
+            document.querySelector('#page-count').textContent = pdfDoc.numPages;
+            renderPage(pageNum);
+        })
+        .catch(err => {
+            // Display error
+            const div = document.createElement('div');
+            div.className = 'error';
+            div.appendChild(document.createTextNode(err.message));
+            document.querySelector('body').insertBefore(div, canvas);
+            // Remove top bar
+            document.querySelector('.top-bar').style.display = 'none';
+        });
+
+    // Button Events
+    document.querySelector('#prev-page').addEventListener('click', showPrevPage);
+    document.querySelector('#next-page').addEventListener('click', showNextPage);
+
+    const getTextContent = (pdfUrl) => {
+    return pdfjsLib.getDocument(pdfUrl).promise.then(function (pdf) { // get all pages text
+        var maxPages = pdf.numPages;
+        var countPromises = []; // collecting all page promises
+        for (var j = 1; j <= maxPages; j++) {
+            var page = pdf.getPage(j);
+
+            var txt = "";
+            countPromises.push(page.then(function (page) { // add page promise
+                var textContent = page.getTextContent();
+                return textContent.then(function (text) { // return content promise
+                    return text.items.map(function (s) { return s.str; }).join(''); // value page text 
+                });
+            }));
+        }
+        // Wait for all pages and join text
+        return Promise.all(countPromises).then(function (texts) {
+            return texts.join('');
+        });
+    });
+};
+
+
+    // Get text content and log it
+    getTextContent(url).then(function (text) {
+        console.log('Text Content:', text);
+    }).catch(function (error) {
+        console.error('Error:', error);
+    });
+
+    // Form submission
+    document.querySelector('#query-form').addEventListener('submit', function (event) {
+        event.preventDefault(); // Prevent default form submission
+
+        // Get the query input value
+        const query = document.querySelector('#query').value;
+
+        // Get the text content from the PDF
+        getTextContent(url).then(function (text) {
+            // Send the data to the server using AJAX
+            const formData = new FormData();
+            formData.append('query', query);
+            formData.append('text', text); // Add text content to the form data
+
+            fetch('/query-form/', {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-CSRFToken': '{{ csrf_token }}' // Add CSRF token
+                }
+            })
+            .then(response => {
+                if (response.ok) {
+                    return response.json();
+                } else {
+                    throw new Error('Failed to submit query');
+                }
+            })
+            .then(data => {
+                // Handle response data as needed
+                console.log(data);
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        }).catch(function (error) {
+            console.error('Error:', error);
+        });
+    });
+});
+
+</script>
+
+{% endblock %}

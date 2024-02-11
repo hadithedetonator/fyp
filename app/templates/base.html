@@ -1,0 +1,47 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+
+  <!-- Include other common styles if any      -->
+  <title>{% block title %}Tutor-Ai{% endblock %}</title>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <div class="actions">
+        {% load static %}
+        {% if user.is_authenticated %}
+          <a id="logout-btn" href="{% url 'accounts:logout' %}"><b>Logout</b></a>
+          <a href="url 'accounts:edit'"><img src="{% static 'app/default.png' %}" alt="deafult">{{user.username}}</a>
+        {% endif %}
+        {% block header_actions %}{% endblock %}
+      </div>
+    </div>
+    
+    <div class="content">
+      {% block content %}{% endblock %}
+    </div>
+  </div>
+</body>
+<style>
+#logout-btn{
+  justify-content: center;
+  margin-left: 10px;
+  padding: 10px;
+  background-color: #fa4141;
+  color: #fff;
+  text-decoration:solid;
+  border-radius: 5px;
+  position: relative;
+}
+img{
+height: 2rem;
+width: 2rem;
+margin-left: 100px;
+}
+</style>
+</html>

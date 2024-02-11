@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+{% load static %}
+<script src="{% static 'app/script.js' %}"></script>
+<link rel="stylesheet" href="{% static 'app/style.css' %}">
+    <div class="dashboard-container">
+              {% if user.is_teacher %}
+            <h3>Teacher Dashboard</h3>
+            <a href="{% url 'app:create_room' %}" class="dashboard-btn">Create Rooms</a>
+            <a href="{% url 'app:created_rooms' %}" class="dashboard-btn">See Created Rooms</a>
+            <a href="{% url 'app:book_list'%}" class="dashboard-btn">Generate using Tutor-AI</a>
+        {% else %}
+            <h3>Student Dashboard</h3>  
+            <h4>Your Joined Rooms:</h4>
+            {% if joined_rooms %}
+                <ul>
+                    {% for room in joined_rooms %}
+                        <li>{{ room.name }}</li>
+                        Joined at: {{ room.created_at }}
+                        <a href="{% url 'app:room_detail' room_id=room.id %}" class="dashboard-btn">Go to Room</a>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p>You haven't joined any rooms yet.</p>
+            {% endif %}
+            <form method="post" action="{% url 'app:join_room' %}">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <button type="submit" class="dashboard-btn">Join Room</button>
+            </form>
+        {% endif %}
+    </div>
+
+
+<script>
+  $(document).ready(function() {
+    $('.dashboard-container').css('opacity', '0').animate({ opacity: '1' }, 300);
+  });
+</script>
+{% endblock %}

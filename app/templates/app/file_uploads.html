@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <h2>File Uploads for Room: {{ room.name }}</h2>
+
+  <div id="file-uploads">
+    {% for file_upload in file_uploads %}
+      <p>
+        {{ file_upload.user.username }} uploaded a file on {{ file_upload.timestamp|date:"F j, Y H:i" }}:
+        <a href="{{ file_upload.file_upload.url }}" target="_blank">Download File</a>
+      </p>
+    {% endfor %}
+  </div>
+
+  <form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Upload File</button>
+  </form>
+{% endblock %}

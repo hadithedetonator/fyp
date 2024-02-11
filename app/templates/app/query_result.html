@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h2>Query Result</h2>
+    <p>Result: {{ result }}</p>
+    <p>Time taken: {{ time_taken }}</p>
+
+    {% if source_documents %}
+        <h3>Source Documents</h3>
+        {% for doc in source_documents %}
+            <div>
+                <p>Source Text: {{ doc.page_content }}</p>
+                <p>Document Name: {{ doc.metadata.source }}</p>
+                <p>Page Number: {{ doc.metadata.page }}</p>
+            </div>
+        {% endfor %}
+    {% endif %}
+{% endblock %}

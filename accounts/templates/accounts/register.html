@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <section class="register-section">
+    {% load static %}
+    <img  style="height: 250px; width: 250px;" class="img1" src="{% static 'accounts/logo.png' %}" alt="My image">
+    <link rel="stylesheet" href="{% static 'accounts/style.css' %}">
+    <form method="post" class="register-form" id="register-form">
+      <h2>Register</h2>
+
+      {% csrf_token %}
+      <div class="form-group">
+        {{ form.username.label_tag }}
+        {{ form.username }}
+        <div class="form-error">{{ form.username.errors }}</div>
+      </div>
+      <div class="form-group">
+        {{ form.email.label_tag }}
+        {{ form.email }}
+        <div class="form-error">{{ form.email.errors }}</div>
+      </div>
+      <div id="tag">
+        {{ form.is_teacher.label_tag }}
+        {{ form.is_teacher }}
+        <div class="form-error">{{ form.is_teacher.errors }}</div>
+      </div>
+      <div class="form-group">
+        {{ form.password1.label_tag }}
+        {{ form.password1 }}
+        <div class="form-error">{{ form.password1.errors }}</div>
+      </div>
+      <div class="form-group">
+        {{ form.password2.label_tag }}
+        {{ form.password2 }}
+        <div class="form-error">{{ form.password2.errors }}</div>
+      </div>
+      <button type="submit" class="btn-register">Register</button>
+      <a href="{% url 'accounts:login' %}" class="not-registered">Already Registered?</a>
+    </form>
+  </section>
+
+  <script>
+    $(document).ready(function() {
+        $('.register-form').css('opacity', '0').animate({ opacity: '1' }, 300);
+    });
+    </script>
+{% endblock %}

@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'app/style.css' %}">
+    <div class="dashboard-container">
+        <h3>Your Created Rooms</h3>
+        {% if created_rooms %}
+            <ul>
+                {% for room in created_rooms %}
+                    <li>{{ room.name }}
+                    <a href="{% url 'app:room_detail' room_id=room.id %}" class="dashboard-btn">See Details</a>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p>You haven't created any rooms yet.</p>
+        {% endif %}
+        <a href="{% url 'app:home' %}" class="dashboard-btn">Go Back</a>
+    </div>
+
+
+    <script>
+      $(document).ready(function() {
+        $('.dashboard-container').css('opacity', '0').animate({ opacity: '1' }, 300);
+      });
+    </script>
+{% endblock %}

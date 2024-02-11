@@ -1,0 +1,81 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    {% load static %}
+    <link rel="stylesheet" type="text/css" href="{% static 'app/style.css' %}">
+    <div class="room-detail-container">
+        <h2>{{ room.name }}</h2>
+        <p>Room Owner: {{ room.creator.username }}</p>
+
+        {% if user.is_teacher %}
+        <p>Room Key: {{ room.pass_key }}</p> <!-- Added room key display -->
+        <a href="{% url 'app:join_requests' room_id=room.id %}" class="dashboard-btn">See Join Requests</a>
+            <p>Total Joined Students: {{ room.participants.count }}</p> <!-- Display total joined students -->
+            <p>Joined Students:</p>
+            <ul>
+                {% for participant in room.participants.all %}
+                    <li>{{ participant.username }} - Joined at: {{ participant.date_joined }}</li>
+                {% endfor %}
+            </ul>
+
+            <!-- Logic for displaying file uploads for teachers -->
+            <p>This content is visible to teachers.</p>
+
+            <!-- Display files uploaded by participants -->
+            {% if uploaded_files.exists %}
+                <div class="file-uploads">
+                    <h3>Files Uploaded by Participants:</h3>
+                    <ul>
+                        {% for file in uploaded_files %}
+                            <li>
+                                <a href="{{ file.file_upload.url }}" target="_blank">{{ file.file_upload.name }}</a> - Uploaded by: {{ file.user.username }} at: {{ file.timestamp }}
+                                <a href="{% url 'app:delete_file' file_id=file.id %}" class="file-delete-btn">Delete</a>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            {% else %}
+                <p>No files uploaded by participants.</p>
+                <a href="{% url 'app:created_rooms' %}" class="dashboard-btn">Go Back</a>
+            {% endif %}
+
+        {% else %}
+            <!-- Logic for displaying joined rooms for students -->
+            <p>This content is visible to students.</p>
+            {% if user in room.participants.all %}
+                <p>You are a participant in this room.</p>
+
+                <!-- Display file uploads for students -->
+                {% if uploaded_files.exists %}
+                    <div class="file-uploads">
+                        <h3>Your Submitted Files:</h3>
+                        <ul>
+                            {% for file in uploaded_files %}
+                                <li>
+                                    <a href="{{ file.file_upload.url }}" target="_blank">{{ file.file_upload.name }}</a> - Uploaded at: {{ file.timestamp }}
+                                    <a href="{% url 'app:delete_file' file_id=file.id %}" class="file-delete-btn">Delete</a>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                {% else %}
+                    <p>No files uploaded by you in this room.</p>
+                {% endif %}
+
+                <!-- Form to leave the room -->
+            <form method="post" action="{% url 'app:leave_room' room_id=room.id %}">
+                {% csrf_token %}
+                <button type="submit" class="dashboard-btn">Leave Room</button>
+            </form>
+
+
+            {% endif %}
+        {% endif %}
+    </div>
+
+    <script>
+        $(document).ready(function() {
+            $('.room-detail-container').css('opacity', '0').animate({ opacity: '1' }, 300);
+        });
+    </script>
+{% endblock %}
